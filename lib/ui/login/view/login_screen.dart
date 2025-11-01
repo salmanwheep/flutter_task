@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_task/data/services/authApi.dart';
 
+import '../../../data/models/login_request.dart';
 import '../view_models/login_viewmodels.dart';
 
 class loginScreen extends StatelessWidget {
@@ -11,6 +13,8 @@ class loginScreen extends StatelessWidget {
   // final loginViewModel viewModel;
   @override
   Widget build(BuildContext context) {
+    AuthApi a=AuthApi();
+    LoginRequest loginRequest=LoginRequest(deliveryNo: 1010,password: "0",languageNo: 2);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -160,7 +164,10 @@ class loginScreen extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () => {},
+                      onPressed: () => {
+
+                        a.login( loginRequest)
+                      },
                       style: ButtonStyle(
                         padding: WidgetStatePropertyAll(
                           EdgeInsets.symmetric(horizontal: 0, vertical: 10),
