@@ -5,7 +5,9 @@ import '../../../data/models/login_request.dart';
 import '../view_models/login_viewmodels.dart';
 
 class loginScreen extends StatelessWidget {
-  const loginScreen();
+  const loginScreen({super.key, required this.viewModel});
+
+   final loginViewModels viewModel;
 
   // final loginViewModel viewModel;
 

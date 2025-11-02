@@ -11,8 +11,6 @@ class LoginRequest{
       "P_DLVRY_NO": deliveryNo,
       "P_PSSWRD": password,
       "P_LANG_NO": languageNo,
-
-
     };
 
 }
