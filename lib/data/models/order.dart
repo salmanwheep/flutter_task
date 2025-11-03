@@ -14,10 +14,11 @@ class Order {
 
 
   factory Order.fromJson(Map<String, dynamic> json) {
+    print(json);
     return Order(
       id: int.tryParse(json['BILL_SRL'].toString()) ?? 0,
       status:_mapStatus( json['DLVRY_STATUS_FLG']?.toString() ?? 'Unknown'),
-      price: json['TOTAL_PRICE']?.toString() ?? '0',
+      price: json['DLVRY_AMT']?.toString() ?? '0',
       date: json['BILL_DATE']?.toString() ?? '',
     );
   }

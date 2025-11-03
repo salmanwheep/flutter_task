@@ -50,6 +50,8 @@ class LocalDataService {
 
     final List<Map<String, dynamic>> maps = await db.query(_table, where: 'status != ?', whereArgs: ['0']);
     return List.generate(maps.length, (i) {
+      return Order.fromJson(maps[i]);
+
       return Order(
         id: maps[i]['id'],
         status: maps[i]['status'],
