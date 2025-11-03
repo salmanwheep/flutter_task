@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_task/data/models/login_response.dart';
-import 'package:flutter_task/data/services/authApi.dart';
+import 'package:flutter_task/data/services/api/authApi.dart';
 import 'package:flutter_task/utils/result.dart';
 
 import '../models/login_request.dart';

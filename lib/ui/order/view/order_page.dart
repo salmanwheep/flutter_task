@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_task/ui/order/view/card.dart';
-// import 'package:text';
+
 class OrderPage extends StatefulWidget {
   const OrderPage({Key? key}) : super(key: key);
 
@@ -134,7 +134,7 @@ void dispose() {
                     Column(
                       children: [
                         Image.asset("imgs/empty.png",fit: BoxFit.fill,),
-                        Text("No orders yet",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,)),
+                        Text("No orders yet",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold)),
                         Text("you don't have any orders yet \n history.",textAlign: TextAlign.center,style: TextStyle(color: Colors.grey,fontSize: 15),)
                       ],
                     ):

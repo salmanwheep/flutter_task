@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_task/data/services/authApi.dart';
+import 'package:flutter_task/data/services/api/authApi.dart';
 
 import '../../../data/models/login_request.dart';
 import '../view_models/login_viewmodels.dart';
