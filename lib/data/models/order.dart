@@ -37,6 +37,8 @@ class Order {
         return 'Delivering';
       case '2':
         return 'Delivered';
+      case '3':
+        return 'Returned';
       default:
         return 'New';
     }
@@ -50,6 +52,8 @@ class Order {
         return 1;
       case 'Delivered':
         return 2;
+      case 'Returned':
+        return 3;
       default:
         return 0;
     }

@@ -12,8 +12,8 @@ class OrderRepositoryLocal implements OrderRepository{
   @override
   Future<Result<List<Order>>> fetchNewOrders() async{
     try {
-      final orders = await _localService.getOrders();
-      return Result.ok(orders.where((order)=>order.status=="New").toList());
+      final orders = await _localService.getOrdersNew();
+      return Result.ok(orders);
     } catch (e) {
       return Result.error(Exception(e));
     }
@@ -22,9 +22,9 @@ class OrderRepositoryLocal implements OrderRepository{
   @override
   Future<Result<List<Order>>> fetchOtherOrders() async{
     try {
-      final orders = await _localService.getOrders();
+      final orders = await _localService.getOrdersOther();
 
-      return Result.ok(orders.where((o)=>o.status!='New').toList());
+      return Result.ok(orders);
     } catch (e) {
       return Result.error(Exception(e));
     }

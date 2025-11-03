@@ -35,10 +35,20 @@ class LocalDataService {
     }
   }
 
-  Future<List<Order>> getOrders() async {
+  Future<List<Order>> getOrdersNew() async {
     final db = await _getDB();
 
-    final List<Map<String, dynamic>> maps = await db.query(_table);
+    final List<Map<String, dynamic>> maps = await db.query(_table,where: 'status = ?', whereArgs: ['0']);
+    return List.generate(maps.length, (i) {
+      return Order.fromJson(maps[i]);
+
+
+    });
+  }
+  Future<List<Order>> getOrdersOther() async {
+    final db = await _getDB();
+
+    final List<Map<String, dynamic>> maps = await db.query(_table, where: 'status != ?', whereArgs: ['0']);
     return List.generate(maps.length, (i) {
       return Order(
         id: maps[i]['id'],

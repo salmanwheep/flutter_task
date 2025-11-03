@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_task/data/services/api/authApi.dart';
 
+import '../../../core/language.dart';
 import '../../../data/models/login_request.dart';
 import '../view_models/login_viewmodels.dart';
 
@@ -59,7 +60,16 @@ class loginScreen extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          onPressed: () => {},
+                          onPressed: () => {
+                            showDialog(
+                              context: context,
+                              builder: (_) => const LanguageDialog(),
+                            ).then((lang) {
+                              if (lang != null) {
+                                // widget.viewModel.changeLanguage(lang);
+                              }
+                            })
+                          },
                           icon: Icon(
                             Icons.language_rounded,
                             color: Colors.white,

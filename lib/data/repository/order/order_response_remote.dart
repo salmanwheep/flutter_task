@@ -15,6 +15,7 @@ class OrderRepositoryRemote implements OrderRepository{
       final orders = await _orderApi.getOrders();
   
       return Result.ok(orders.where((o)=>o.status=='New').toList());
+
     } catch (e) {
       return Result.error(Exception(e));
     }
