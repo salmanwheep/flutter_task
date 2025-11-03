@@ -16,7 +16,7 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: int.tryParse(json['BILL_SRL'].toString()) ?? 0,
-      status: json['DLVRY_STATUS_FLG']?.toString() ?? 'Unknown',
+      status:_mapStatus( json['DLVRY_STATUS_FLG']?.toString() ?? 'Unknown'),
       price: json['TOTAL_PRICE']?.toString() ?? '0',
       date: json['BILL_DATE']?.toString() ?? '',
     );
@@ -24,9 +24,34 @@ class Order {
   Map<String, dynamic>toJson() {
     return {
       'id': id,
-      'status': status,
+      'status': _reverseStatus(status),
       'price': price,
       'date': date,
   };
 }
+  static String _mapStatus(dynamic code) {
+    switch (code.toString()) {
+      case '0':
+        return 'New';
+      case '1':
+        return 'Delivering';
+      case '2':
+        return 'Delivered';
+      default:
+        return 'New';
+    }
+  }
+
+  static int _reverseStatus(String status) {
+    switch (status) {
+      case 'New':
+        return 0;
+      case 'Delivering':
+        return 1;
+      case 'Delivered':
+        return 2;
+      default:
+        return 0;
+    }
+  }
 }

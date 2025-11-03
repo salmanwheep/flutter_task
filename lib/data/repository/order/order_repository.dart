@@ -6,6 +6,8 @@ import '../../models/order.dart';
 
 abstract class OrderRepository {
 
-  Future<Result<List<Order>>> fetchOrders(String status) ;
-
+  // Future<Result<List<Order>>> fetchAllOrders() ;
+  Future<Result<List<Order>>> fetchNewOrders() ;
+  Future<Result<List<Order>>> fetchOtherOrders() ;
+  Future<void> insertOrdersLocal(List<Order> order);
 }

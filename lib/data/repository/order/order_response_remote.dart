@@ -10,22 +10,27 @@ class OrderRepositoryRemote implements OrderRepository{
   final OrderApi _orderApi;
 
   @override
-  Future<Result<List<Order>>> fetchOrders(String status) async{
+  Future<Result<List<Order>>> fetchNewOrders() async{
     try {
       final orders = await _orderApi.getOrders();
-
-      return Result.ok(orders);
+  
+      return Result.ok(orders.where((o)=>o.status=='New').toList());
     } catch (e) {
       return Result.error(Exception(e));
     }
   }
-  Future<Result<void>> insertOrdersLocal(List<Order> order) async{
+  @override
+  Future<Result<List<Order>>> fetchOtherOrders() async{
     try {
-      await LocalDataService.insertOrders(order);
-      return Result.ok(null);
+      final orders = await _orderApi.getOrders();
+
+      return Result.ok(orders.where((o)=>o.status!='New').toList());
     } catch (e) {
       return Result.error(Exception(e));
     }
+  }
+  @override
+  Future<void> insertOrdersLocal(List<Order> order) async{
   }
 
 }

@@ -8,7 +8,7 @@ class LocalDataService {
   static const int _version = 1;
   static const String _table = "orders";
 
-  static Future<Database> _getDB() async {
+  Future<Database> _getDB() async {
     return openDatabase(join(await getDatabasesPath(), "delivery.db"),
         onCreate: (db, version) async =>
         await db.execute('''
@@ -21,7 +21,7 @@ class LocalDataService {
     '''), version: _version);
   }
 
-  static Future<void> insertOrders(List<Order> orders) async {
+  Future<void> insertOrders(List<Order> orders) async {
     final db = await _getDB();
 
     db.delete(_table);
@@ -35,14 +35,10 @@ class LocalDataService {
     }
   }
 
-  static Future<List<Order>> getOrders(String status) async {
+  Future<List<Order>> getOrders() async {
     final db = await _getDB();
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      _table,
-      where: 'status = ?',
-      whereArgs: [status],
-    );
+    final List<Map<String, dynamic>> maps = await db.query(_table);
     return List.generate(maps.length, (i) {
       return Order(
         id: maps[i]['id'],
