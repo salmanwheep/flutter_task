@@ -8,6 +8,7 @@ import 'package:flutter_task/ui/login/view/login_screen.dart';
 import 'package:flutter_task/ui/login/view_models/login_viewmodels.dart';
 import 'package:flutter_task/ui/order/view/order_page.dart';
 import 'package:flutter_task/ui/order/view_models/order_viewmodels.dart';
+import 'package:flutter_task/ui/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'data/repository/order/order_repositry_local.dart';
@@ -60,7 +61,8 @@ debugShowCheckedModeBanner: false,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home:
-       OrderPage(viewModel: context.read(),)
+          SplashScreen()
+       // OrderPage(viewModel: context.read(),)
       // loginScreen(viewModel: loginViewModels(authRepository: context.read()))
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_task/ui/order/view/card.dart';
 import 'package:flutter_task/ui/order/view_models/order_viewmodels.dart';
@@ -6,159 +8,187 @@ import '../../../core/language.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key,required this.viewModel}) ;
-final OrderViewModel viewModel;
+  final OrderViewModel viewModel;
   @override
   State<OrderPage> createState() => _OrderPageState();
 }
 
-class _OrderPageState extends State<OrderPage> with SingleTickerProviderStateMixin{
+class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver, TickerProviderStateMixin {
 
-TabController? _tabController;
-@override
-void initState() {
-  super.initState();
+  TabController? _tabController;
+  Timer? _idleTimer;
+  @override
+  void initState() {
 
-  _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
+    WidgetsBinding.instance.addObserver(this);
+    _resetTimer();
 
 
-}
-@override
-void dispose() {
-  _tabController!.dispose();
-  super.dispose();
-}
+  }
+  void _resetTimer() {
+    _idleTimer?.cancel();
+    _idleTimer = Timer(const Duration(minutes: 2), _logoutUser);
+  }
+  void _logoutUser() {
+    if (!mounted) return;
+    Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _idleTimer?.cancel();
+      _idleTimer = Timer(const Duration(minutes: 2), _logoutUser);
+    } else if (state == AppLifecycleState.resumed) {
+      _resetTimer();
+    }
+  }
+  @override
+  void dispose() {
+    _tabController!.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _idleTimer?.cancel();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
 
     // TODO: implement build
-    return Scaffold(
+    return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _resetTimer,
+        onPanDown: (_) => _resetTimer(),
+        child: Scaffold(
       appBar: AppBar(title: Text("Order Page"), centerTitle: true),
       body: Center(
         child: ListenableBuilder(
-          listenable: widget.viewModel.loadOrdersNew,
+            listenable: widget.viewModel.loadOrdersNew,
 
-          builder: (context,child) {
-            if(widget.viewModel.loadOrdersNew.running){
-              return CircularProgressIndicator();
+            builder: (context,child) {
+              if(widget.viewModel.loadOrdersNew.running){
+                return CircularProgressIndicator();
 
-            }else if(widget.viewModel.loadOrdersNew.error){
-              return Center(child: IconButton(onPressed: ()=>widget.viewModel.loadOrdersNew, icon: Icon(Icons.refresh),iconSize: 30) );
-            }
-            return Column(
-              children: [
-                Container(
-                  color: Color(0xfffd2c0a),
-                  height: MediaQuery.of(context).size.height * 0.15,
-                  width: double.infinity,
-                  child: Stack(
-                    children:[
+              }else if(widget.viewModel.loadOrdersNew.error){
+                return Center(child: IconButton(onPressed: ()=>widget.viewModel.loadOrdersNew.execute, icon: Icon(Icons.refresh),iconSize: 30) );
+              }
+              return Column(
+                children: [
+                  Container(
+                    color: Color(0xfffd2c0a),
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    width: double.infinity,
+                    child: Stack(
+                        children:[
 
-                      Row(
-                      children: [
-                        Expanded(flex: 3, child: Padding(
-                          padding: EdgeInsets.only(left: 20),
-                          child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment:CrossAxisAlignment.start ,
-                                                  children: [
-                                                  Text("Ahmed",style: TextStyle(color: Colors.white,fontSize: 25)),
-                                                    Text("Othman",style: TextStyle(color: Colors.white,fontSize: 35,fontWeight: FontWeight.bold,))
-                                                ],)
-                        )),
+                          Row(
+                            children: [
+                              Expanded(flex: 3, child: Padding(
+                                  padding: EdgeInsets.only(left: 20),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:CrossAxisAlignment.start ,
+                                    children: [
+                                      Text("Ahmed",style: TextStyle(color: Colors.white,fontSize: 25)),
+                                      Text("Othman",style: TextStyle(color: Colors.white,fontSize: 35,fontWeight: FontWeight.bold,))
+                                    ],)
+                              )),
 
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Color(0xff004f62),
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(110),
-                              ),
-                            ),
-                            alignment: Alignment.centerRight,
+                              Expanded(
+                                flex: 2,
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff004f62),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(110),
+                                    ),
+                                  ),
+                                  alignment: Alignment.centerRight,
 
-                            child: GestureDetector(
-                              onTap: ()=>{
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => const LanguageDialog(),
-                                ).then((lang) {
-                                  if (lang != null) {
-                                    // widget.viewModel.changeLanguage(lang);
-                                  }
-                                })
+                                  child: GestureDetector(
+                                    onTap: ()=>{
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => const LanguageDialog(),
+                                      ).then((lang) {
+                                        if (lang != null) {
+                                          // widget.viewModel.changeLanguage(lang);
+                                        }
+                                      })
 
-                            },
-                              child: Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.all( Radius.circular(10),
-                                  )),
-                                child: Icon(
-                                    Icons.language_outlined,
-                                    size: 25,
-                                    color: Color(0xff057998),
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all( Radius.circular(10),
+                                          )),
+                                      child: Icon(
+                                        Icons.language_outlined,
+                                        size: 25,
+                                        color: Color(0xff057998),
 
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
-                   ),
-                      Positioned(
-                          left:MediaQuery.of(context).size.width*.45,
-                          bottom: 0,
+                          Positioned(
+                              left:MediaQuery.of(context).size.width*.45,
+                              bottom: 0,
 
-                          child: Image.asset("imgs/man.png",height: 100,width: 120,fit: BoxFit.fill)
-                      ),
-                    ]
+                              child: Image.asset("imgs/man.png",height: 100,width: 120,fit: BoxFit.fill)
+                          ),
+                        ]
+                    ),
                   ),
-                ),
                   Container(
-            // height: 50,
-            // width: 250,
-            margin: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
+                    // height: 50,
+                    // width: 250,
+                      margin: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
 
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [BoxShadow(
-                color: Colors.grey,
-                offset: Offset(0.0, 1.0), //(x,y)
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0.0, 1.0), //(x,y)
 
-              )]
-            ),
-            child: TabBar(
+                          )]
+                      ),
+                      child: TabBar(
 
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.black,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.black,
 
 
-              controller: _tabController,
-              indicator: BoxDecoration(
+                        controller: _tabController,
+                        indicator: BoxDecoration(
 
-                borderRadius: BorderRadius.circular(25),
-                color: Color(0xff004f62),
-              ),
-indicatorSize: TabBarIndicatorSize.tab,
-                tabs: [
-             Tab(text:  "New"),
-              Tab(text:  "Others"),
+                          borderRadius: BorderRadius.circular(25),
+                          color: Color(0xff004f62),
+                        ),
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        tabs: [
+                          Tab(text:  "New"),
+                          Tab(text:  "Others"),
 
-            ],
-            )
+                        ],
+                      )
 
                   ),
                   Expanded(child:       ListenableBuilder(
-            listenable: widget.viewModel,
-            builder: (context,_) {
-              return TabBarView(
-                controller: _tabController,
-                      children: [
-                        widget.viewModel.ordersNew.isEmpty?
+                      listenable: widget.viewModel,
+                      builder: (context,_) {
+                        return TabBarView(
+                          controller: _tabController,
+                          children: [
+                            widget.viewModel.ordersNew.isEmpty?
                             Column(
                               children: [
                                 Image.asset("imgs/empty.png",fit: BoxFit.fill,),
@@ -166,35 +196,35 @@ indicatorSize: TabBarIndicatorSize.tab,
                                 Text("you don't have any orders yet \n history.",textAlign: TextAlign.center,style: TextStyle(color: Colors.grey,fontSize: 15),)
                               ],
                             ):
-                        ListView.builder(
-                          itemCount: widget.viewModel.ordersNew.length,
-                          itemBuilder: (context, index) =>
-                              OrderCard(price: widget.viewModel.ordersNew[index].price, status: widget.viewModel.ordersNew[index].status, date: widget.viewModel.ordersNew[index].date),
-                        ),
-                        widget.viewModel.ordersOther.isEmpty?
-                        Column(
-                          children: [
-                            Image.asset("imgs/empty.png",fit: BoxFit.fill,),
-                            Text("No orders yet",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold)),
-                            Text("you don't have any orders yet \n history.",textAlign: TextAlign.center,style: TextStyle(color: Colors.grey,fontSize: 15),)
+                            ListView.builder(
+                              itemCount: widget.viewModel.ordersNew.length,
+                              itemBuilder: (context, index) =>
+                                  OrderCard(price: widget.viewModel.ordersNew[index].price, status: widget.viewModel.ordersNew[index].status, date: widget.viewModel.ordersNew[index].date),
+                            ),
+                            widget.viewModel.ordersOther.isEmpty?
+                            Column(
+                              children: [
+                                Image.asset("imgs/empty.png",fit: BoxFit.fill,),
+                                Text("No orders yet",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold)),
+                                Text("you don't have any orders yet \n history.",textAlign: TextAlign.center,style: TextStyle(color: Colors.grey,fontSize: 15),)
+                              ],
+                            ):
+                            ListView.builder(
+                              itemCount: widget.viewModel.ordersOther.length,
+                              itemBuilder: (context, index) =>
+                                  OrderCard(price: widget.viewModel.ordersOther[index].price, status: widget.viewModel.ordersOther[index].status, date: widget.viewModel.ordersOther[index].date),
+                            ),
                           ],
-                        ):
-                        ListView.builder(
-                          itemCount: widget.viewModel.ordersOther.length,
-                          itemBuilder: (context, index) =>
-                              OrderCard(price: widget.viewModel.ordersOther[index].price, status: widget.viewModel.ordersOther[index].status, date: widget.viewModel.ordersOther[index].date),
-                        ),
-                      ],
 
-                    );
-            }
+                        );
+                      }
                   )),
 
-              ],
-            );
-          }
+                ],
+              );
+            }
         ),
       ),
-    );
+    ));
   }
 }
