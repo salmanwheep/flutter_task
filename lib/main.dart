@@ -52,7 +52,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes:
       {
-         "/login":(context)=> loginScreen(viewModel: loginViewModels(authRepository: context.read()))
+        "/login":(context)=> loginScreen(viewModel: loginViewModels(authRepository: context.read())),
+        "/orderPage":(context)=>OrderPage(viewModel: context.read(),),
       },
 debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
