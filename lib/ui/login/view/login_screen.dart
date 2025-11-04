@@ -16,7 +16,6 @@ class loginScreen extends StatelessWidget {
   // final loginViewModel viewModel;
   @override
   Widget build(BuildContext context) {
-    AuthApi a=AuthApi();
     LoginRequest loginRequest=LoginRequest(deliveryNo: 1010,password: "0",languageNo: 2);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -177,7 +176,9 @@ class loginScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () => {
+                        viewModel.login.execute(loginRequest).then((value) => {
 
+                        }),
                         Navigator.pushNamed(context, '/orderPage')
                       },
                       style: ButtonStyle(
