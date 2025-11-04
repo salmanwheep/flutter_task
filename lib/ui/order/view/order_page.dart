@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_task/ui/order/view/card.dart';
 import 'package:flutter_task/ui/order/view_models/order_viewmodels.dart';
-
+import 'package:user_idle_detector/user_idle_detector.dart';
 import '../../../core/language.dart';
 
 class OrderPage extends StatefulWidget {
@@ -19,12 +19,19 @@ void initState() {
   super.initState();
 
   _tabController = TabController(length: 2, vsync: this);
-
+UserIdleDetector().initialize(
+      listener: () {
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(context, "/login");
+      },
+      idleTime: const Duration(minutes: 2),
+    );
 
 }
 @override
 void dispose() {
   _tabController!.dispose();
+  UserIdleDetector().dispose();
   super.dispose();
 }
   @override
@@ -42,7 +49,7 @@ void dispose() {
               return CircularProgressIndicator();
 
             }else if(widget.viewModel.loadOrdersNew.error){
-              return Center(child: IconButton(onPressed: ()=>widget.viewModel.loadOrdersNew, icon: Icon(Icons.refresh),iconSize: 30) );
+              return Center(child: IconButton(onPressed: ()=>widget.viewModel.loadOrdersNew.execute, icon: Icon(Icons.refresh),iconSize: 30) );
             }
             return Column(
               children: [
