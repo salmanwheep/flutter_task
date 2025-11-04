@@ -1,16 +1,30 @@
-# flutter_task
+# My Software Design Choices for the Flutter Delivery App
 
-A new Flutter project.
+Here's a breakdown of the key design choices I made for this application.
 
-## Getting Started
+## 1. Architecture: MVVM (Model-View-ViewModel)
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## 2. State Management: Provider
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+For state management, I went with the `provider` package. It's a straightforward and powerful solution that's popular in the Flutter community.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+*   I use **`ChangeNotifierProvider`** to make my `ViewModel` instances available to the widget tree.
+*   My ViewModels use **`ChangeNotifier`** (or `Listenable`) to let the View know when the state has changed, so the UI can rebuild itself automatically.
+*   This way, I don't have to manually pass state down through many layers of widgets.
+
+## 3. Data Handling: Repository Pattern
+
+I used the Repository pattern to handle the data sources. The ViewModel talks to a `Repository`, and the repository figures out whether to get the data from the remote API or the local database.
+
+*   **Remote Data**: I use the `http` package for making network requests to the backend.
+*   **Local Data**: For offline support, I use `sqflite` to create a local SQLite database. This caches the order data, so the user can still see their orders even if they're offline.
+
+
+## 4. Session Management
+
+To improve security, I built a custom session expiration feature.
+
+*   It's implemented using a `Timer` and a `WidgetsBindingObserver`.
+*   If the user doesn't interact with the app for 2 minutes (or if the app is in the background), the timer fires and logs the user out, sending them back to the login screen.
+*   Any user interaction (like a tap) or bringing the app back to the foreground resets the timer.
