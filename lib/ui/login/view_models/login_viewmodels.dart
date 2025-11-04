@@ -15,7 +15,7 @@ class loginViewModels  {
   Future<Result<void>> _login(LoginRequest credentials) async {
 
 
-      final result = await _authRepository.login(credentials.deliveryNo, credentials.password);
+      final result = await _authRepository.login(credentials);
       return result;
   }
 

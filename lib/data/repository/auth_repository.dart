@@ -14,10 +14,10 @@ class AuthRepository extends ChangeNotifier{
 
   bool isAuth=false;
 
-  Future<Result<void>> login(int userId,String password)async {
+  Future<Result<void>> login(LoginRequest request)async {
     try {
       final response = await _authApi.login(
-          LoginRequest(deliveryNo: userId, password: password, languageNo: 2));
+          request);
 
       isAuth = true;
 

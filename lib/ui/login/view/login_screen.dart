@@ -16,7 +16,8 @@ class loginScreen extends StatelessWidget {
   // final loginViewModel viewModel;
   @override
   Widget build(BuildContext context) {
-    LoginRequest loginRequest=LoginRequest(deliveryNo: 1010,password: "0",languageNo: 2);
+    LoginRequest loginRequest=LoginRequest(deliveryNo: 1010,password: "1",languageNo: 2);
+    // LoginRequest loginRequest=LoginRequest(deliveryNo: 1010,password: "1",languageNo: 1);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(

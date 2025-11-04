@@ -13,31 +13,16 @@ class AuthApi{
 const AuthApi();
 Future<Result<LoginResponse>> login(LoginRequest request) async{
   final body = {
-"Value": {
-  // request.toJson()
-  "P_DLVRY_NO": 1010,
-  "P_LANG_NO": 1,
-  "P_BILL_SRL": "",
-  "P_PRCSSD_FLG":""
-}
+"Value":request.toJson()
+
+
   };
-
+print(request.toJson());
   try {
-    /*HttpClient client = new HttpClient();
-    var res= await client.postUrl(Uri.parse("http://mdev.yemensoft.net:8087/OnyxDeliveryService/Service.svc/CheckDeliveryLogin"));
-    res.headers.add("Content-Type", "application/json");
-    res.write(jsonEncode(body));
-    var response = await res.close();
-    final stringData = await response.transform(utf8.decoder).join();
-    final json = jsonDecode(stringData) as List<dynamic>;
-    return Result.ok(
-       LoginResponse(userId: request.deliveryNo, body: json.toString()),
-    );*/
 
-    //
     http.Response response = await http.post(Uri.parse(
-        // "http://mdev.yemensoft.net:8087/OnyxDeliveryService/Service.svc/CheckDeliveryLogin"
-      "http://mdev.yemensoft.net:8087/OnyxDeliveryService/Service.svc/GetDeliveryBillsItems"
+         "http://mdev.yemensoft.net:8087/OnyxDeliveryService/Service.svc/CheckDeliveryLogin"
+
     ),
       headers: {"Content-Type": "application/json"},
 
